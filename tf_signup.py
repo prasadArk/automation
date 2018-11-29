@@ -1,101 +1,84 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 import time
-driver = webdriver.Chrome(executable_path=r"/home/pc-01/Downloads/chromedriver")
-driver.get('http://default-environment.i8pqpkc32a.us-west-2.elasticbeanstalk.com/')
-driver.maximize_window()
 
-time.sleep(5)
-#Redirect to Create account button
-driver.find_element_by_partial_link_text('Create').click()
+class signup():
 
-driver.find_element(By.ID, "customer_first_name" ).send_keys("John")
-driver.find_element(By.ID, "customer_last_name" ).send_keys("Doe")
-driver.find_element(By.ID, "customer_email").send_keys("abc18@yopmail.com")
-driver.find_element(By.ID, "customer_password").send_keys("Qwerty@123")
-driver.find_element(By.ID, "retype_customer_password").send_keys("Qwerty@123")
-driver.find_element_by_xpath("//input[@type='submit' and @value='Create Account']").click()
-time.sleep(5)
+    def testmethod(self):
+        driver = webdriver.Firefox(executable_path=r"/home/pc-01/Documents/python/NEW/geckodriver")
+        baseurl = "http://default-environment.i8pqpkc32a.us-west-2.elasticbeanstalk.com/"
+        driver.get(baseurl)
+        driver.maximize_window()
+        driver.implicitly_wait(10)
 
+        time.sleep(5)
 
-#Test credentials
-#dangejasmine@gmail.com
-#123456
+        #Scroll page from top to bottom
 
-#Redirect to login page from sign up page ->
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight/4);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo(document.body.scrollHeight/4, document.body.scrollHeight/2);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo(document.body.scrollHeight/2,(document.body.scrollHeight*3)/2);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo((document.body.scrollHeight*3)/2,document.body.scrollHeight);")
+        time.sleep(2)
+        driver.execute_script("window.scrollTo(document.body.scrollHeight, 0);")
+        Title = driver.title
+        print("Title of the page is: " + str(Title))
 
-driver.find_element_by_partial_link_text('My Account').click()
+        #Create Account
 
-#login page 
-driver.find_element_by_id("username").clear()
-driver.find_element_by_id("username").send_keys("dangejasmine@gmail.com")
-driver.find_element_by_id("password").send_keys("123456")
-driver.find_element_by_xpath("//input[@type='submit' and @value='Login']").click()
+        createaccount = driver.find_element(By.PARTIAL_LINK_TEXT, "Create")
+        createaccount.click()
 
-time.sleep(5)
+        Fname = driver.find_element(By.ID, "customer_first_name")
+        Fname.send_keys("John")
 
-driver.quit()
+        Lname = driver.find_element(By.ID, "customer_last_name")
+        Lname.send_keys("Doe")
 
-#Radio button handling using select command
-import time
-radiobuttons = dirver.find_elements(By.id, "catDropdown")
-size = len(radiobuttons)
-print ("The size is:" +str(size))
+        email = driver.find_element(By.ID, "customer_email")
+        email.send_keys("prasad+46@arkenea.com")
 
-#Drop-down handling using select command
-element = driver.find_element_by_id("select_sort")
-sel = Select(element)
+        password = driver.find_element(By.ID, "customer_password")
+        password.send_keys("Qwerty@123")
 
-sel.select_by_index(2)
-print("It should select preorder")
-time.sleep(2)
+        cpassword = driver.find_element(By.ID, "retype_customer_password")
+        cpassword.send_keys("Qwerty@123")
 
-sel.select_by_value("oldest")
-print("It should select oldest")
-time.sleep(2)
+        submit = driver.find_element_by_xpath("//input[@type='submit' and @value='Create Account']")
+        submit.click()
+        time.sleep(2)
 
-sel.select_by_visible_text("Price: Lowest First")
-print("It should select Price: Lowest First")
-time.sleep(2)
+        # Forgot your password
 
+        forgotbutton = driver.find_element(By.PARTIAL_LINK_TEXT, "Forgot your password?")
+        forgotbutton.click()
 
-#Mouse hover -
+        forgotemail = driver.find_element(By.ID, "forgot_mail")
+        forgotemail.send_keys("dangejasmine@gmail.com")
 
-from selenium.webdriver.common.action_chains import ActionChains
+        submitbutton = driver.find_element(By.XPATH, "//input[@type='submit' and @value='Submit']")
+        submitbutton.click()
 
-element_to_hover_over = driver.find_element_by_xpath("//div/div[2]/div/div[2]")	#Feature preorders - Masterminds creation item no. 2 
+        forgothere =driver.find_element(By.PARTIAL_LINK_TEXT, "Click here")
+        forgothere.click()
 
-hover = ActionChains(driver).move_to_element(element_to_hover_over)
-hover.perform()	#if clicked more info button is visible
+        #Login
 
-print("Element visible?" + str(element_to_hover_over.is_displayed()))	#True if visible, false if hidden
+        logintext = driver.find_element(By.ID, "username")
+        logintext.send_keys("dangejasmine@gmail.com")
 
-#####
-Created class -> need init method (to perform driver class)
-Class h():
-def __init__(self, driver):
-self.driver = driver
-######
+        loginpassword = driver.find_element(By.ID, "password")
+        loginpassword.send_keys("123456")
 
-Calendar - xppath - //section[@class='cal-month'][position()=1]//a[text()='3']
+        loginbutton = driver.find_element_by_xpath("//input[@type='submit' and @value='Login']")
+        loginbutton.click()
 
+        time.sleep(2)
+        driver.quit()
 
-#How to take screenshots
-
-destinationFileName = "/users/atomar/Desktop/test.png"             	#path
-
-try : 
-	driver.save_screenshot(destinationFileName)
-	print("screenshot saved to :" + destinationFileName)
-except NotaDirectoryError:
-	print("Not a directory issue")
-
-#Find size of the window
-
-height = driver.execute_script("return_window.innerheight;")
-width = driver.execute_script("return_window.innerwidth;")
-print("Height: " + str(height))
-print("width: " + str(width))
-
-
-	
+ff = signup()
+ff.testmethod()
